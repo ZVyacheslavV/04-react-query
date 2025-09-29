@@ -1,0 +1,23 @@
+.container {
+  max-width: 1440px;
+  margin: 0 auto 12px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* flex-wrap: wrap; */
+  /*  gap: 12px; */
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #004182;
+}
