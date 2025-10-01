@@ -15,8 +15,9 @@ import css from './App.module.css';
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [query, setQuery] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  const { data, isSuccess, isLoading, isError } = useQuery({
+  const { data, isSuccess, isLoading, isError, isFetching } = useQuery({
     queryKey: ['movies', query, currentPage],
     queryFn: () => fetchMovies(query, currentPage),
     enabled: query !== '',
@@ -24,8 +25,6 @@ export default function App() {
   });
   const results = data?.results ?? [];
   const totalPages = data?.total_pages ?? 0;
-
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     if (isSuccess && (data?.results?.length ?? 0) === 0) {
@@ -48,7 +47,7 @@ export default function App() {
   return (
     <>
       <SearchBar onSubmit={handleSearch} />
-      {isSuccess && totalPages > 1 && (
+      {isSuccess && totalPages > 1 && !isFetching && (
         <ReactPaginate
           pageCount={totalPages}
           pageRangeDisplayed={5}
@@ -61,11 +60,12 @@ export default function App() {
           previousLabel="←"
         />
       )}
+      {(isLoading || isFetching) && <Loader />}
+      {isError && <ErrorMessage />}
       {results.length > 0 && (
         <MovieGrid movies={results} onSelect={openModal} />
       )}
-      {isLoading && <Loader />}
-      {isError && <ErrorMessage />}
+
       {selectedMovie && (
         <MovieModal onClose={closeModal} movie={selectedMovie} />
       )}
